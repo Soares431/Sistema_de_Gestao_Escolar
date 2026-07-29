@@ -26,6 +26,7 @@ public class Sala {
     @JoinColumn(name="cod_turma_fk", referencedColumnName = "cod_turma")
     private Turma turma;
 
+
     public Integer getNroSala() {
         return nroSala;
     }

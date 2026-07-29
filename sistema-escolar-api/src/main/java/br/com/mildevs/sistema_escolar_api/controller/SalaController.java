@@ -25,12 +25,12 @@ public class SalaController {
     @Autowired
     private TurmaRepository turmaRepository;
 
-    private SalaResponseDTO toResponseDTO(Sala sala){
+    private SalaResponseDTO toResponseDTO(Sala sala) {
         TurmaResumoDTO turmaDTO = null;
-        if(sala.getTurma() != null){
+        if (sala.getTurma() != null) {
             turmaDTO = new TurmaResumoDTO(sala.getTurma().getCodTurma(), sala.getTurma().getNome());
         }
-        return  new SalaResponseDTO(
+        return new SalaResponseDTO(
                 sala.getNroSala(),
                 sala.getLargura(),
                 sala.getComprimento(),
@@ -46,10 +46,10 @@ public class SalaController {
         sala.setComprimento(dto.getComprimento());
         sala.setAltura(dto.getAltura());
 
-        if(dto.getCodTurma() != null){
+        if (dto.getCodTurma() != null) {
             Turma turma = turmaRepository.findById(dto.getCodTurma()).orElse(null);
-            if(turma == null){
-                return  ResponseEntity.badRequest().build();
+            if (turma == null) {
+                return ResponseEntity.badRequest().build();
             }
 
             sala.setTurma(turma);
@@ -103,13 +103,15 @@ public class SalaController {
 
     @DeleteMapping("/{nroSala}")
     public ResponseEntity<Void> deletar(@PathVariable Integer nroSala) {
-        if (!salaRepository.existsById(nroSala))
+        Sala sala = salaRepository.findById(nroSala).orElse(null);
+        if (sala == null)
             return ResponseEntity.notFound().build();
-        else {
-            salaRepository.deleteById(nroSala);
-            return ResponseEntity.noContent().build();
 
-        }
+        if (sala.getTurma() != null)
+            sala.setTurma(null);
+
+        salaRepository.deleteById(nroSala);
+        return ResponseEntity.noContent().build();
 
     }
 

@@ -34,8 +34,6 @@ function TurmaForm({ turmaEditando, onSalvo, onCancelar }) {
     event.preventDefault();
 
     const dados = { nome, codProfessor };
-    // const dadoNome = { nome }
-    // const dadoCodProfessor = { codProfessor }
 
     if (turmaEditando) {
       // Modo edição: PUT
@@ -43,7 +41,7 @@ function TurmaForm({ turmaEditando, onSalvo, onCancelar }) {
         .then(response => {
           onSalvo(response.data);
           setErro('');
-        })
+        }) 
         .catch(error => {
           console.error('Erro ao atualizar Turma:', error);
           setErro('Não foi possível atualizar o Turma.');
@@ -76,9 +74,9 @@ function TurmaForm({ turmaEditando, onSalvo, onCancelar }) {
       </div>
 
       <div>
-        <label>codProfessores responsaveis</label>
+        <label>Profesores responsaveis </label>
         <select value={codProfessor} onChange={(e => setCodProfessor(e.target.value))} required>
-          <option value=""> Selecione o codProfessor: </option>
+          <option value=""> Selecione o codigo do professor: </option>
           {professores.map(prof => (
             <option key={prof.codProfessor} value={prof.codProfessor}>
               {prof.codProfessor} - {prof.nome}

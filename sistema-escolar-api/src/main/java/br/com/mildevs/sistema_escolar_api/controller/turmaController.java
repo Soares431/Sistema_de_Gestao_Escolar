@@ -4,15 +4,17 @@ import br.com.mildevs.sistema_escolar_api.DTO.AlunoDTO.AlunoResumoDTO;
 import br.com.mildevs.sistema_escolar_api.DTO.ProfessorDTO.ProfessorResumoDTO;
 import br.com.mildevs.sistema_escolar_api.DTO.Turma.TurmaRequestDTO;
 import br.com.mildevs.sistema_escolar_api.DTO.Turma.TurmaResponseDTO;
+import br.com.mildevs.sistema_escolar_api.repository.SalaRepository;
 import br.com.mildevs.sistema_escolar_api.repository.TurmaRepository;
 import br.com.mildevs.sistema_escolar_api.repository.ProfessorRepository;
-import org.antlr.v4.runtime.atn.ProfilingATNSimulator;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import br.com.mildevs.sistema_escolar_api.entity.Turma;
 import br.com.mildevs.sistema_escolar_api.entity.Professor;
+import br.com.mildevs.sistema_escolar_api.entity.Sala;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +30,9 @@ public class turmaController {
 
     @Autowired
     private ProfessorRepository professorRepository;
+
+    @Autowired
+    private SalaRepository salaRepository;
 
     private TurmaResponseDTO toResponseDTO(Turma turma) {
         ProfessorResumoDTO professorDTO = null;
@@ -92,7 +97,7 @@ public class turmaController {
     }
 
     @PutMapping("/{cod}")
-    public ResponseEntity<TurmaResponseDTO> atualizarTurma(@PathVariable Integer cod, @RequestBody TurmaRequestDTO  turmaAtualizada) {
+    public ResponseEntity<TurmaResponseDTO> atualizarTurma(@PathVariable Integer cod, @RequestBody TurmaRequestDTO turmaAtualizada) {
         Turma turma = turmaRepository.findById(cod).orElse(null);
         Professor professor = professorRepository.findById(turmaAtualizada.getCodProfessor()).orElse(null);
 
@@ -109,25 +114,24 @@ public class turmaController {
 
     }
 
-//    @PutMapping("/{cod}")
-//    public ResponseEntity<TurmaResponseDTO> atualizar_nome(@PathVariable Integer cod, @RequestBody TurmaResponseDTO turmaAtualizado) {
-//        return turmaRepository.findById(cod)
-//                .map(turma -> {
-//                    turma.setNome(turmaAtualizado.getNome());
-//                    return ResponseEntity.ok(toResponseDTO(turmaRepository.save(turma)));
-//                })
-//                .orElse(ResponseEntity.notFound().build());
-//    }
-
     @DeleteMapping("/{cod}")
     public ResponseEntity<Void> deletar(@PathVariable Integer cod) {
-        if (!turmaRepository.existsById(cod))
-            return ResponseEntity.notFound().build();
-        else {
-            turmaRepository.deleteById(cod);
-            return ResponseEntity.noContent().build();
 
+        Turma turma = turmaRepository.findById(cod).orElse(null);
+        if (turma == null)
+            return ResponseEntity.notFound().build();
+
+        Optional<Sala> salaOptional = salaRepository.findByTurma_CodTurma(cod);
+        if (salaOptional.isPresent()) {
+            Sala salaDaTurma = salaOptional.get();
+            if (salaDaTurma.getTurma().getCodTurma().equals(turma.getCodTurma())) {
+                salaDaTurma.setTurma(null);
+                salaRepository.save(salaDaTurma);
+            }
         }
+
+        turmaRepository.deleteById(cod);
+        return ResponseEntity.noContent().build();
 
     }
 

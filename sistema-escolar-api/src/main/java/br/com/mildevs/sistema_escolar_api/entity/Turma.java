@@ -27,9 +27,7 @@ public class Turma {
     @ManyToMany(mappedBy = "turmas", fetch = FetchType.LAZY)
     private List<Aluno> alunos;
 
-//    @OneToOne(mappedBy = "turmas", fetch = FetchType.LAZY)
-//    @Column(nullable = false)
-//    private Sala sala;
+    
 
     public Integer getCodTurma() {
         return codTurma;
@@ -63,11 +61,5 @@ public class Turma {
         this.alunos = alunos;
     }
 
-//    public Sala getSala() {
-//        return sala;
-//    }
-//
-//    public void setSala(Sala sala) {
-//        this.sala = sala;
-//    }
+
 }
