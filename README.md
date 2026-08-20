@@ -2,9 +2,7 @@
 
 Sistema de gestão escolar full stack, migrado de uma aplicação de console em Java (DAO + JDBC/Hibernate puro) para uma arquitetura moderna com **API REST em Spring Boot** e **front-end em React**.
 
-## Sobre o projeto
-
-O projeto original (`Sistema-Escolar`) era um app de console simples, sem API e sem front-end, usado apenas para CRUD local de alunos, professores, turmas e salas. Esta versão reescreve o back-end como uma API REST profissional e adiciona uma interface web para uso real por uma secretaria escolar.
+**OBS:** Ainda está em desenvolvimento!
 
 ## Tecnologias
 
